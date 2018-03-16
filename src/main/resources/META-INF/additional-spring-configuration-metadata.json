@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "bot.token",
+      "type": "java.lang.String",
+      "description": "Token for telegram bot."
+    },
+    {
+      "name": "bot.name",
+      "type": "java.lang.String",
+      "description": "Telegram bot name."
+    },
+    {
+      "name": "bot.bip",
+      "type": "java.lang.String",
+      "description": "Character sequence to use instead bad words."
+    }
+  ]
+}
