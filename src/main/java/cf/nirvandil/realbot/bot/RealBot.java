@@ -35,7 +35,7 @@ public class RealBot extends TelegramLongPollingCommandBot {
         log.trace("Update body is: {}", update);
         if (update.hasMessage() && update.getMessage().isGroupMessage()) {
             Message message = update.getMessage();
-            if (censurer.hasBadWords(message)) {
+            if (message.hasText() && censurer.hasBadWords(message)) {
                 log.warn("Censuring bad words!");
                 Long chatId = message.getChatId();
                 User user = message.getFrom();
