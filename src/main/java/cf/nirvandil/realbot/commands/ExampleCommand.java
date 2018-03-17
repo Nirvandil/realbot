@@ -20,6 +20,6 @@ public class ExampleCommand extends BotCommand {
     @SneakyThrows
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         log.warn("Command executed! {}", getCommandIdentifier());
-        absSender.executeAsync(new SendMessage(chat.getId(), "Example answer!))"), new LoggingCallback<>());
+        absSender.executeAsync(new SendMessage(chat.getId(), "Пример ответа!)"), new LoggingCallback<>());
     }
 }
