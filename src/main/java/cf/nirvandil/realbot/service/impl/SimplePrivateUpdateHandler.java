@@ -19,10 +19,11 @@ import org.telegram.telegrambots.api.objects.User;
 import org.telegram.telegrambots.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.bots.commandbot.commands.helpCommand.HelpCommand;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
+import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -65,30 +66,29 @@ public class SimplePrivateUpdateHandler implements PrivateUpdateHandler {
             String helpText = HelpCommand.getHelpText(botCommands);
             SendMessage helpMessage = messageFactory.messageWithText(chatId, helpText);
             SendMessage helloMessage = messageFactory.helloMessage(chatId);
-            return Optional.of(Arrays.asList(helpMessage, helloMessage));
+            return Optional.of(asList(helpMessage, helloMessage));
         }
         if (stateRepo.existsByChatId(chatId)) {
             State state = stateRepo.findByChatId(chatId);
+            String text = message.getText();
             if (state.getIsDataForCallRequested()) {
                 log.info("Found answer for call request.");
-                state.setIsDataForCallRequested(false);
-                state.setIsDataForConnectRequested(false);
-                stateRepo.save(state);
-                return Optional.of(Arrays.asList(
-                        messageFactory.waitForTheAnswerMessage(chatId),
-                        messageFactory.callBackNotifyMessage(message.getText())));
+                return handleAnswer(state, text, messageFactory::callBackNotifyMessage);
             }
             if (state.getIsDataForConnectRequested()) {
                 log.info("Found answer for connect request.");
-                state.setIsDataForCallRequested(false);
-                state.setIsDataForConnectRequested(false);
-                stateRepo.save(state);
-                return Optional.of(Arrays.asList(
-                        messageFactory.waitForTheAnswerMessage(chatId),
-                        messageFactory.connectNotifyMessage(message.getText())
-                ));
+                return handleAnswer(state, text, messageFactory::connectNotifyMessage);
             }
         }
         return Optional.empty();
+    }
+
+    private Optional<List<BotApiMethod<?>>> handleAnswer(State state, String text, Function<String, SendMessage> message) {
+        state.setIsDataForCallRequested(false);
+        state.setIsDataForConnectRequested(false);
+        stateRepo.save(state);
+        return Optional.of(asList(
+                messageFactory.waitForTheAnswerMessage(state.getChatId()),
+                message.apply(text)));
     }
 }
