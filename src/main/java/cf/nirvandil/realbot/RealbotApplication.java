@@ -1,7 +1,6 @@
 package cf.nirvandil.realbot;
 
 import cf.nirvandil.realbot.bot.RealBot;
-import cf.nirvandil.realbot.commands.ExampleCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.bots.commandbot.commands.helpCommand.HelpCommand;
 
 import java.util.List;
 
