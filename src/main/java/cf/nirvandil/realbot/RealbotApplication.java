@@ -14,12 +14,12 @@ import java.util.List;
 @SpringBootApplication
 public class RealbotApplication implements CommandLineRunner {
     private final RealBot realBot;
-    private final List<BotCommand> commands;
+    private final List<BotCommand> botCommands;
 
     @Autowired
-    public RealbotApplication(RealBot realBot, List<BotCommand> commands) {
+    public RealbotApplication(RealBot realBot, List<BotCommand> botCommands) {
         this.realBot = realBot;
-        this.commands = commands;
+        this.botCommands = botCommands;
     }
 
     public static void main(String[] args) {
@@ -30,7 +30,7 @@ public class RealbotApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         TelegramBotsApi api = new TelegramBotsApi();
-        commands.forEach(realBot::register);
+        botCommands.forEach(realBot::register);
         api.registerBot(realBot);
     }
 }

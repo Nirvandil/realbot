@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.commandbot.TelegramLongPollingCommandBot;
@@ -39,4 +40,9 @@ public class RealBot extends TelegramLongPollingCommandBot {
         return token;
     }
 
+    @Override
+    protected boolean filter(Message message) {
+        String text = message.getText();
+        return message.isGroupMessage() && !text.startsWith("/bot");
+    }
 }
