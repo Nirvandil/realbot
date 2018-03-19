@@ -14,6 +14,8 @@ public class SendMessageFactoryImpl implements SendMessageFactory {
     private final KeyboardFactory keyboardFactory;
     @Value("${bot.name}")
     private String botName;
+    @Value("${bot.supportLink}")
+    private String supportLink;
 
     @Autowired
     public SendMessageFactoryImpl(KeyboardFactory keyboardFactory) {
@@ -36,14 +38,14 @@ public class SendMessageFactoryImpl implements SendMessageFactory {
     @Override
     public SendMessage callBackNotifyMessage(String text) {
         return new SendMessage(adminChannelId,
-                "*Поступила заявка на обратный звонок:\n" + text + "*")
+                "*Поступила заявка на обратный звонок:*\n" + text)
                 .enableMarkdown(true);
     }
 
     @Override
     public SendMessage connectNotifyMessage(String text) {
         return new SendMessage(adminChannelId,
-                "*Поступила заявка на подключение:\n" + text + "*")
+                "*Поступила заявка на подключение:*\n" + text)
                 .enableMarkdown(true);
     }
 
@@ -68,5 +70,25 @@ public class SendMessageFactoryImpl implements SendMessageFactory {
     @Override
     public SendMessage messageWithText(Long chatId, String text) {
         return new SendMessage(chatId, text).enableMarkdown(true).enableHtml(true);
+    }
+
+    @Override
+    public SendMessage successBalanceMessage(Long chatId, Double balance) {
+        return new SendMessage(chatId, "Мы сходили в биллинг и получили данные о балансе " +
+                "по номеру телефона. Ваш баланс: " + balance);
+    }
+
+    @Override
+    public SendMessage failAccessDataMessage(Long chatId) {
+        return new SendMessage(chatId, "К сожалению, мы не смогли получить данные из нашего биллинга. " +
+                "Попробуйте позже или обратитесь в нашу службу поддержки с помощью опции /call");
+    }
+
+    @Override
+    public SendMessage greetingMessage(Long chatId) {
+        return new SendMessage(chatId, "Приветствуем новых участников группы.\n" +
+                "Вы можете заказать обратный звонок или оставить заявку на подключение к сети RealWeb с помощью " +
+                "нашего бота, проследовав по ссылке @"+ botName + ".\n" +
+                "Если Вы хотите пообщаться с техподдержкой напрямую, можно сделать это в выделенном чате: " + supportLink);
     }
 }

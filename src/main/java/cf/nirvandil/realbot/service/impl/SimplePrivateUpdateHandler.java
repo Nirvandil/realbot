@@ -55,14 +55,14 @@ public class SimplePrivateUpdateHandler implements PrivateUpdateHandler {
         User user = message.getFrom();
         Contact contact = message.getContact();
         Long chatId = message.getChatId();
-        Integer id = user.getId();
+        Integer userId = user.getId();
         String phoneNumber = null;
         if (contact != null) {
             phoneNumber = contact.getPhoneNumber();
         }
-        if (phoneNumber != null && !userDataRepo.existsById(id)) {
+        if (phoneNumber != null && !userDataRepo.existsById(userId)) {
             log.info("Given new contact. Saving them to user database.");
-            userDataRepo.save(new UserData(id, phoneNumber));
+            userDataRepo.save(new UserData(userId, phoneNumber));
             String helpText = HelpCommand.getHelpText(botCommands);
             SendMessage helpMessage = messageFactory.messageWithText(chatId, helpText);
             SendMessage helloMessage = messageFactory.helloMessage(chatId);
@@ -70,14 +70,19 @@ public class SimplePrivateUpdateHandler implements PrivateUpdateHandler {
         }
         if (stateRepo.existsByChatId(chatId)) {
             State state = stateRepo.findByChatId(chatId);
-            String text = message.getText();
+            StringBuilder builder = new StringBuilder(message.getText());
+            userDataRepo.findById(state.getUserId())
+                    .map(UserData::getPhone)
+                    .ifPresent(origPhone ->
+                            builder.append("\n_Номер телефона пользователя Телеграм, отправившего это сообщение, ")
+                                    .append(origPhone).append("_"));
             if (state.getIsDataForCallRequested()) {
                 log.info("Found answer for call request.");
-                return handleAnswer(state, text, messageFactory::callBackNotifyMessage);
+                return handleAnswer(state, builder.toString(), messageFactory::callBackNotifyMessage);
             }
             if (state.getIsDataForConnectRequested()) {
                 log.info("Found answer for connect request.");
-                return handleAnswer(state, text, messageFactory::connectNotifyMessage);
+                return handleAnswer(state, builder.toString(), messageFactory::connectNotifyMessage);
             }
         }
         return Optional.empty();

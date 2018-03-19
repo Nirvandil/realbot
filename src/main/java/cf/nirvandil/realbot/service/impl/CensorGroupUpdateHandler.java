@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @Slf4j
 @Service
@@ -32,13 +33,17 @@ public class CensorGroupUpdateHandler implements GroupUpdateHandler {
     @Override
     public Optional<List<BotApiMethod<?>>> handleGroupUpdate(Update update) {
         Message message = update.getMessage();
+        Long chatId = message.getChatId();
         if (message.hasText() && censurer.hasBadWords(message)) {
             log.warn("Censuring bad words!");
-            Long chatId = message.getChatId();
             String name = buildNameFor(message.getFrom());
             DeleteMessage deleteMessage = new DeleteMessage(chatId, message.getMessageId());
             String clearedText = "Цензурированное сообщение от " + name + ":\n " + censurer.clearMessage(message);
             return Optional.of(asList(deleteMessage, messageFactory.messageWithText(chatId, clearedText)));
+        }
+        List<User> newChatMembers = message.getNewChatMembers();
+        if (newChatMembers != null) {
+            return Optional.of(singletonList(messageFactory.greetingMessage(chatId)));
         }
         return Optional.empty();
     }

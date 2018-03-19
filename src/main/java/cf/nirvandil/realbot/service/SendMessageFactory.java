@@ -18,4 +18,10 @@ public interface SendMessageFactory {
     SendMessage botLinkMessage(Long chatId);
 
     SendMessage messageWithText(Long chatId, String text);
+
+    SendMessage successBalanceMessage(Long chatId, Double balance);
+
+    SendMessage failAccessDataMessage(Long chatId);
+
+    SendMessage greetingMessage(Long chatId);
 }

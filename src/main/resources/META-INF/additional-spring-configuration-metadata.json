@@ -19,6 +19,31 @@
       "name": "bot.adminChannelId",
       "type": "java.lang.Long",
       "description": "Id of admin's (support) chat."
+    },
+    {
+      "name": "bot.realApiHost",
+      "type": "java.lang.String",
+      "description": "Host where to look for customer's info."
+    },
+    {
+      "name": "bot.realApiPath",
+      "type": "java.lang.String",
+      "description": "Path to api on the realApiHost."
+    },
+    {
+      "name": "bot.realApiKey",
+      "type": "java.lang.String",
+      "description": "Key for access to RealWebApi."
+    },
+    {
+      "name": "bot.groupLink",
+      "type": "java.lang.String",
+      "description": "URL to join public RealWeb telegram group."
+    },
+    {
+      "name": "bot.supportLink",
+      "type": "java.lang.String",
+      "description": "URL to join support RealWeb telegram group."
     }
   ]
 }
