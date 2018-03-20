@@ -1,5 +1,6 @@
 package cf.nirvandil.realbot.service.impl;
 
+import cf.nirvandil.realbot.model.BalanceData;
 import cf.nirvandil.realbot.service.KeyboardFactory;
 import cf.nirvandil.realbot.service.SendMessageFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,9 +74,9 @@ public class SendMessageFactoryImpl implements SendMessageFactory {
     }
 
     @Override
-    public SendMessage successBalanceMessage(Long chatId, Double balance) {
-        return new SendMessage(chatId, "Мы сходили в биллинг и получили данные о балансе " +
-                "по номеру телефона. Ваш баланс: " + balance);
+    public SendMessage successBalanceMessage(Long chatId, BalanceData data) {
+        return new SendMessage(chatId, "Ваш баланс (данные получены на основании номера телефона): " + data)
+                .enableMarkdown(true);
     }
 
     @Override

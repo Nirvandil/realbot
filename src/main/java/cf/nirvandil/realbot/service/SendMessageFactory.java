@@ -1,5 +1,6 @@
 package cf.nirvandil.realbot.service;
 
+import cf.nirvandil.realbot.model.BalanceData;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 public interface SendMessageFactory {
@@ -19,7 +20,7 @@ public interface SendMessageFactory {
 
     SendMessage messageWithText(Long chatId, String text);
 
-    SendMessage successBalanceMessage(Long chatId, Double balance);
+    SendMessage successBalanceMessage(Long chatId, BalanceData data);
 
     SendMessage failAccessDataMessage(Long chatId);
 
