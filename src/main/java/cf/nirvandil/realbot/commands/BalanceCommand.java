@@ -1,6 +1,7 @@
 package cf.nirvandil.realbot.commands;
 
 import cf.nirvandil.realbot.callbacks.LoggingCallback;
+import cf.nirvandil.realbot.model.BalanceData;
 import cf.nirvandil.realbot.model.UserData;
 import cf.nirvandil.realbot.repo.UserDataRepo;
 import cf.nirvandil.realbot.service.SendMessageFactory;
@@ -31,7 +32,6 @@ public class BalanceCommand extends BaseBotCommand {
         this.messageFactory = messageFactory;
         this.userDataRepo = userDataRepo;
         this.jdbcTemplate = jdbcTemplate;
-        this.isPublic = false;
     }
 
     @Override
@@ -41,13 +41,18 @@ public class BalanceCommand extends BaseBotCommand {
         UserData userData = userDataRepo.findById(user.getId())
                 .orElseThrow(RuntimeException::new);
         String phone = userData.getPhone();
-        List<Double> balance = jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM customers WHERE first_name = ?", new Object[]{phone},
-                (rs, rowNum) -> rs.getDouble("balance")
+        List<BalanceData> balance = jdbcTemplate.query(
+                "SELECT SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.mobile_telephone,' ',''),'+',''),')',''),'(',''),'-',''), 1, 11) AS MPhone,\n" +
+                        "a.balance,a.credit, a.balance+a.credit AS SUM " +
+                        "FROM accounts a, users u " +
+                        "WHERE " +
+                        "u.basic_account=a.ID AND a.is_deleted=0 AND a.is_blocked=0 AND a.block_id=0 AND SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.mobile_telephone,' ',''),'+',''),'(',''),')',''),'-',''),1,11) REGEXP '^79[0-9]{9}$' AND SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.mobile_telephone,' ',''),'+',''),'(',''),')',''),'-',''),1,11) = ?;", new Object[]{phone},
+                (rs, rowNum) -> new BalanceData(rs.getDouble("balance"), rs.getDouble("credit"), rs.getDouble("SUM"))
         );
         if (!balance.isEmpty()) {
             absSender.executeAsync(messageFactory.successBalanceMessage(chatId, balance.get(0)),
                     new LoggingCallback<>());
-        }
+        } else
+            absSender.executeAsync(messageFactory.failAccessDataMessage(chatId), new LoggingCallback<>());
     }
 }
