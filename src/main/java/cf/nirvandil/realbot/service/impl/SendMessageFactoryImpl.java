@@ -81,15 +81,34 @@ public class SendMessageFactoryImpl implements SendMessageFactory {
 
     @Override
     public SendMessage failAccessDataMessage(Long chatId) {
-        return new SendMessage(chatId, "К сожалению, мы не смогли получить данные из нашего биллинга. " +
-                "Попробуйте позже или обратитесь в нашу службу поддержки с помощью опции /call");
+        return new SendMessage(chatId, "К сожалению, мы не смогли получить данные из нашего биллинга." +
+                "Если Вы зарегистрированы в RealWeb на другой номер телефона, это нормально. Иначе " +
+                "попробуйте позже или обратитесь в нашу службу поддержки с помощью опции /call");
     }
 
     @Override
     public SendMessage greetingMessage(Long chatId) {
         return new SendMessage(chatId, "Приветствуем новых участников группы.\n" +
-                "Вы можете заказать обратный звонок или оставить заявку на подключение к сети RealWeb с помощью " +
-                "нашего бота, проследовав по ссылке @"+ botName + ".\n" +
+                "Вы можете заказать обратный звонок, получить справочную информацию или оставить заявку " +
+                "на подключение к сети RealWeb с помощью нашего бота, проследовав по ссылке @"+ botName + ".\n" +
                 "Если Вы хотите пообщаться с техподдержкой напрямую, можно сделать это в выделенном чате: " + supportLink);
+    }
+
+    @Override
+    public SendMessage techQuestionMessage(Long chatId) {
+        return messageWithText(chatId,
+                "<a href=\"https://ya.ru\">Ссылка на настройку роутеров.</a>\n\n" +
+                "<a href=\"https://ya.ru\">Ссылка на настройку смартов.</a>\n\n" +
+                "<a href=\"https://ya.ru\">Ссылка на ещё что-то.</a>\n\n" +
+                "<a href=\"https://ya.ru\">Не нашли ответа? Ссылка на чат техподдержки.</a>\n\n")
+                .enableHtml(true)
+                .disableWebPagePreview();
+    }
+
+    @Override
+    public SendMessage financialQuestionMessage(Long chatId) {
+        return messageWithText(chatId, "<a href=\"https://ya.ru\">Ссылка на финансовые пояснения.</a>\n\n")
+                .enableHtml(true)
+                .disableWebPagePreview();
     }
 }

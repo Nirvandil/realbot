@@ -25,4 +25,8 @@ public interface SendMessageFactory {
     SendMessage failAccessDataMessage(Long chatId);
 
     SendMessage greetingMessage(Long chatId);
+
+    SendMessage techQuestionMessage(Long chatId);
+
+    SendMessage financialQuestionMessage(Long chatId);
 }

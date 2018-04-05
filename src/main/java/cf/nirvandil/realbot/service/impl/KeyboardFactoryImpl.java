@@ -11,6 +11,7 @@ import org.telegram.telegrambots.bots.commandbot.commands.BotCommand;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
 
@@ -31,7 +32,12 @@ public class KeyboardFactoryImpl implements KeyboardFactory {
     @Override
     public ReplyKeyboardMarkup createAllActionsKeyboard() {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup().setResizeKeyboard(true);
-        keyboard.setKeyboard(singletonList(this.buttons));
+        KeyboardRow firstRow = new KeyboardRow();
+        int size = this.buttons.size();
+        firstRow.addAll(this.buttons.subList(0, size/2));
+        KeyboardRow secondRow = new KeyboardRow();
+        secondRow.addAll(this.buttons.subList(size / 2, size));
+        keyboard.setKeyboard(asList(firstRow, secondRow));
         return keyboard;
     }
 
